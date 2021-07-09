@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Venue details</title>
+</head>
+<body>
+  <div layout:fragment="content">
+	  <div th:if="${{error}}">
+	  	<h1  th:text="${{error}}"></h1>
+	  	<p>Return to <a href="/">Homepage</a></p>
+	  </div>
+  	<div style="margin-top:10px; background-color:#e7e7e7; padding: 20px 60px" th:if="${venue}">
+  	
+	    <h1 th:text="${venue.name}"></h1>
+	    <p th:text="|${{venue.address}}, ${{venue.postcode}}|"></p>
+	    <p th:text="|Capacity: ${{venue.capacity}}|"></p>
+	    <p th:text="|Events at this venue:|"></p>
+	    <ul th:each="e : ${venue.events}">
+	    	<li><a th:href="@{/events/event_detail/{id}(id = ${e.id})}" th:text="${e.name}"></a> </li>
+	    </ul>
+	    <div class="alert alert-danger" role="danger" th:if="${{warning}}" th:text="${{warning}}">
+	    </div>
+	    
+	    <div sec:authorize="hasRole('ADMINISTRATOR')">
+		    <form th:action="@{/venues/venues_detail/{num}(num=${venue.id})}" th:method="delete">
+			    <button type="submit" class="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
+		    </form>
+		    
+		    <br>
+		    
+		    <p>
+		    	<a class="btn btn-primary" role="button" th:href="@{/venues/venue_detail/{id}/update_venue(id = ${venue.id})}">                                                                     <i aria-hidden="true"></i> Update</a>
+		   	</p>
+		</div>
+	   	<p>Return to <a href="/venues">Venues</a></p> 
+	   </div>
+  </div>
+
+</body>
+</html>

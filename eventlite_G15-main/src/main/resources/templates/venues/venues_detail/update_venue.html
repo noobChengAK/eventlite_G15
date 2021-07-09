@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Update Venue</title>
+  <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Update Details</h1>
+
+    <form id='updateForm' th:method = "post" th:action="@{/venues/venue_detail/{id}/update_venue(id=${venue.id})}">
+        <label for="name">Venue Name</label>
+  	    <input class="form-control" type="text" name="name" th:value="${venue.name}" maxlength="255" placeholder="Enter venue name" required/>
+        <label for="address">Address</label>
+        <input class="form-control" type="text"  name="address" th:value="${venue.address}" maxlength="300" placeholder="Choose an address" required/>
+        <label for="postcode">Postcode</label>
+        <input class="form-control" type="text"  name="postcode" th:value="${venue.postcode}" minlength="6" maxlength="6"  placeholder="Choose a postcode" required/>
+        <label for="capacity">Capacity</label>
+        <input class="form-control" type="number" name="capacity" th:value="${venue.capacity}" min = 1 max = 2100000 placeholder="Enter a capacity" required/>
+        <br>
+        <button class="btn btn-primary" id='submit' th:href="gay">Submit</button>
+    </form>
+    <br>
+     <a class="btn btn-warning" role="button" th:href="@{/venues/venues_detail/{id}(id=${venue.id})}"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+    <div class="alert alert-danger" role="danger" th:text="${{warning}}" th:if="${{warning}}">
+  
+  </div>  
+    
+  </div>
+
+</body>
+</html>

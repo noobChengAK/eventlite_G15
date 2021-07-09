@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Update Event</title>
+  <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Update Details</h1>
+  
+  <form id='updateForm' th:method = "post" th:action="@{/events/event_detail/{id}/update_event(id = ${event.id})}">
+        <label for="name">Event Name</label>
+  	    <input class="form-control" type="text" name="name" th:value="${event.name}" maxlength="255" placeholder="Enter event name" required/>
+        <label for="venue">Venue Name</label>
+        <select class="form-control" name="venue" required > 
+        	<option th:each="v : ${venues}" th:value="${v.id}" th:text="${v.name}"></option>
+        </select>
+        <label for="date">Date</label>
+        <input class="form-control" type="date" id = "date" name="date" th:value="${event.date}" placeholder="Choose a date" required/>
+        <label for="time">Time(optional)</label>
+        <input class="form-control" type="time" name="time" th:value="${event.time}" placeholder="Enter a time" />
+        <label for="description">Description(optional)</label>
+        <textarea class="form-control" rows="6" cols="60" name="description" th:value="${event.description}" 
+                  placeholder="Enter a description" maxlength="500" ></textarea>
+        <br>
+        <button class="btn btn-primary" id='submit' th:href="@{/events/event_detail/{id}(id = ${event.id})}">Submit</button>
+  </form>
+  <br>
+  <a class="btn btn-warning" role="button" th:href="@{/events/event_detail/{id}(id = ${event.id})}"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+  <div class="alert alert-danger" role="danger" th:text="${{warning}}" th:if="${{warning}}">
+  
+  </div>   
+  <script>
+	    $(function(){
+	        var dtToday = new Date();
+	
+	        var month = dtToday.getMonth() + 1;
+	        var day = dtToday.getDate();
+	        var year = dtToday.getFullYear();
+	
+	        if(month < 10)
+	            month = '0' + month.toString();
+	        if(day < 10)
+	            day = '0' + day.toString();
+	
+	        var minDate = year + '-' + month + '-' + day;    
+	        $('#date').attr('min', minDate);
+	    });
+    </script>
+  </div>
+    
+
+</body>
+</html>

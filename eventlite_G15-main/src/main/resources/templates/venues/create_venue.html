@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Create Venue</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Add Venue</h1>
+
+    <form action="#" th:action="@{/venues/create_venue}"method="post">
+      
+        <label for="venuestring">Venue Name</label>
+        <input   class="form-control" type="text" name="nameVal" id="venuestring" placeholder="Enter your venue name" autofocus="autofocus" maxlength="255" required />
+       
+        <label for="capacity">Capacity</label>
+        <input  class="form-control" min= 1 max = 2100000 type="number" name="capacityVal" id="capacity" placeholder="Select the capacity" autofocus="autofocus" required/>
+        <label for="addressstring">Address</label>
+        <input  class="form-control" type="text" name="addressVal" id="addressstring" placeholder="Write address here" autofocus="autofocus" maxlength="300" required/>
+        <label for="postcodestring">Postcode</label>
+        <input  class="form-control" type="text" name="postcodeVal" id="postcodestring" placeholder="Write postcode here" autofocus="autofocus" maxlength="7" required/>
+     <br>
+     
+     <div class="alert alert-danger" role="danger" th:text="${{warning}}" th:if="${{warning}}">
+       
+    </div>
+    
+      <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
+      <a class="btn btn-warning" role="button" href="/venues"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+    </form>
+    
+   
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Event details</title>
+  	<script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+  
+</head>
+<body>	
+  <div layout:fragment="content" >
+  
+  <div th:if="${{warning}}">
+  	<h1  th:text="${{warning}}"></h1>
+  	<p>Return to <a href="/">Homepage</a></p>
+  </div>
+  
+  	<div th:if="${event}">
+  	
+  	<div style="margin-top:10px; background-color:#e7e7e7; padding: 20px 60px">
+  	
+	    <h1 th:text="${event.name}">Name</h1>
+	    <a th:href="@{/venues/venues_detail/{id}(id = ${event.venue.id})}" th:text="|Venue: ${event.venue.name}|">Venue</a>
+	    <br><br>
+	    <p th:text="|Date: ${{event.date}}|">Date</p>
+	    <p th:if="${event.time}" th:text="|Time: ${{event.time}}|">Time</p>
+	    <p th:if="${event.description != ''}" th:text="|Description: ${event.description}|">Description</p>
+	    
+	    <br>
+	    <div class="alert alert-success" role="success" th:if="${{tweet}}">
+	       Tweet sucessfully tweeted: <b th:text="${{tweet}}"></b> was posted.
+	       <br>
+	    </div>
+	    
+	    <div class="alert alert-danger" role="danger" th:if="${{warning_twitter}}">
+	    	<p th:text="${{warning_twitter}}"></p>
+	    	
+	    <br>
+	    </div>
+		    <h4>Share the event on Twitter </h4>
+		    <form  th:method="post" th:action="@{/events/event_detail/{id}(id=${id})}" >
+		      <input style="width:90%" type="text" name="tweetVal" th:placeholder="${{event.name}}" required>
+		      <br>
+		      <button style="margin-top:10px" class="btn btn-primary" type="submit"><i class="fab fa-twitter"></i> Send Tweet!</button>
+		    </form>
+		  
+	    <br>
+	    
+	    <div sec:authorize="hasRole('ADMINISTRATOR')">
+		    <form th:action="@{/events/event_detail/{num}(num=${event.id})}" th:method="delete">
+			      <button type="submit" class="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete this event</button>
+		    </form>
+		    <br>
+		    <p>
+	      		  <a class="btn btn-primary" role="button" th:href="@{/events/event_detail/{id}/update_event(id = ${event.id})}"><i aria-hidden="true"></i> Update this event</a>
+	   	    </p>	
+		</div>
+		
+		<p>Return to <a href="/events">Events</a></p>  
+	    
+	    <br>
+	    
+	    </div>
+    
+    <br>
+    
+	<div id='map' style='width: 100%; height: 300px;'>
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+		mapboxgl.accessToken = 'pk.eyJ1IjoiamFuZ283MDcwNyIsImEiOiJja25nM3dwZ2EwbmdpMnhud2l3NnptdDB2In0.YEBs1Z8MUie4xPW-kDiIGg';
+	
+		var longitude = /*[[${event.venue.longitude}]]*/ 0;
+		var latitude = /*[[${event.venue.latitude}]]*/ 0;
+		var coordinates = [longitude, latitude];
+		var name = /*[[${event.name}]]*/ 'eventname';
+		var time = /*[[${event.time}]]*/ 0 ;
+		
+	
+		var map = new mapboxgl.Map({
+			container: 'map',
+			style: 'mapbox://styles/mapbox/streets-v11',
+			center: coordinates,
+			zoom: 14
+		});
+		
+		// Create a default Marker and add it to the map.
+		var popup = new mapboxgl.Popup({offset:30}).setText(name+ " at " +time);
+		var marker1 = new mapboxgl.Marker()
+			.setLngLat(coordinates)
+			.setPopup(popup)
+			.addTo(map);
+		/*]]>*/
+		</script>
+	</div>
+    
+    
+    <br>
+    
+     <p>Return to <a href="/">Homepage</a></p>
+     
+  </div>
+  </div>
+ 
+</body>
+</html>

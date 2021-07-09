@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Create Event</title>
+  
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Add Event</h1>
+
+    <form action="#" th:action="@{/events/create_event}" method="post">
+      
+        <label for="eventstring">Event Name</label>
+        <input name="nameVal" class="form-control" type="text"  id="eventstring" placeholder="Enter your event name here" autofocus="autofocus" maxlength="255" required />
+        
+        <label for="venuestring">Event Venue</label>
+        <select name="venueVal" id="venuestring" class="form-control">
+        	<option th:each="v : ${venues}" th:value="${v.id}" th:text="${v.name}" required/>         		
+        </select>
+        <label for="date">Date</label>
+        <input name="dateVal"  id="date" class="form-control" type="date"  autofocus="autofocus" required/>
+        <label for="timestring">Time</label>
+        <input  name="timeVal" class="form-control" type="time" id="timestring"  autofocus="autofocus"/>
+        <label for="descstring">Description</label>
+        <input name="desVal" class="form-control" type="text" id="descstring" placeholder="Description of event" autofocus="autofocus" maxlength="500"/>
+     
+     
+     <br>    
+      <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
+      <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+  </form>
+  <br>  
+  <div class="alert alert-danger" role="danger" th:text="${{warning}}" th:if="${{warning}}">
+  
+  </div>   
+</body>
+</html>

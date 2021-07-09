@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>All events</title>
+  	<script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+</head>
+<body>
+   
+  
+  
+  <div layout:fragment="content">
+    <h1>All events</h1>
+    
+    
+      <form th:action="@{/events/search}" th:method="get">
+      <label for=""></label>
+      <input type="text" name="nameVal">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    
+    <div th:if="${events_searched}">
+    	<h2 th:text="|Results for: ${val}|"></h2>
+	    <table class="table table-striped table-hover">
+	      <thead>
+	        <tr>
+	          <th><i class="fas fa-bolt"></i> Event</th>
+	          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+	          <th><i class="fas fa-calendar"></i> Date</th>
+	          <th><i class="fas fa-clock"></i> Time</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	        <tr th:each="e : ${events_searched}">
+	          <td><a th:text="${e.name}" th:href="@{/events/event_detail/{id}(id = ${e.id})}">My Event</a></td>
+	          <td><a th:text="${e.venue.name}" th:href="@{/venues/venues_detail/{id}(id = ${e.venue.id})}">Event venue</a></td>
+	          <td th:text="${{e.date}}">Event date</td>
+	          <td th:text="${{e.time}}">Event time</td>
+	          
+	         </tr>
+	        </tr>
+	
+	      </tbody>
+	    </table>
+    </div>
+    <div th:if=" not ${events_searched}">
+	  	<h2>Upcoming events</h2>
+	    <table class="table table-striped table-hover">
+	      <thead>
+	        <tr>
+	          <th><i class="fas fa-bolt"></i> Event</th>
+	          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+	          <th><i class="fas fa-calendar"></i> Date</th>
+	          <th><i class="fas fa-clock"></i> Time</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	        <tr th:each="e : ${events}">
+	          <td><a th:text="${e.name}" th:href="@{/events/event_detail/{id}(id = ${e.id})}">My Event</a></td>
+	          <td><a th:text="${e.venue.name}" th:href="@{/venues/venues_detail/{id}(id = ${e.venue.id})}">Event venue</a></td>
+	          <td th:text="${{e.date}}">Event date</td>
+	          <td th:text="${{e.time}}">Event time</td>
+	          
+	         </tr>
+	        </tr>
+	
+	      </tbody>
+	    </table>
+	    
+	    <h2>Past events</h2>
+	    <table class="table table-striped table-hover">
+	      <thead>
+	        <tr>
+	          <th><i class="fas fa-bolt"></i> Event</th>
+	          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+	          <th><i class="fas fa-calendar"></i> Date</th>
+	          <th><i class="fas fa-clock"></i> Time</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	        <tr th:each="e : ${past_events}">
+	          <td><a th:text="${e.name}" th:href="@{/events/event_detail/{id}(id = ${e.id})}">My Event</a></td>
+	          <td><a th:text="${e.venue.name}" th:href="@{/venues/venues_detail/{id}(id = ${e.venue.id})}">Event venue</a></td>
+	          <td th:text="${{e.date}}">Event date</td>
+	          <td th:text="${{e.time}}">Event time</td>
+	          
+	         </tr>
+	        </tr>
+	
+	      </tbody>
+    	</table>
+    </div>
+        
+    
+    <div sec:authorize="hasRole('ADMINISTRATOR')">
+    <p>
+      <a class="btn btn-primary" role="button" href="/events/create_event"><i class="fas fa-plus" aria-hidden="true"></i> Add Event</a>
+    </p>
+	</div>
+    
+    
+    <h3> Twitter feed </h3>
+    <table class="table table-striped table-hover">
+      <thead>
+          <th>Date</th>
+          <th>Tweet</th>
+      </thead>
+      <tbody>   
+	      <tr th:each="t,stats : ${tweets}" th:unless="${stats.index > 4}">
+	          <td th:text="${t.key}">My Event</td>
+	          <td><a th:text="${t.value[1]}" th:href="${t.value[0]}">My Event</a></td>
+	      </tr>
+      </tbody>
+    </table>
+    
+    
+    <p>Return to <a href="/">Homepage</a></p>
+    
+     <h3> Map of upcoming events </h3>
+    
+    <div id='map' style='width: 100%; height: 300px;'></div>
+		<script type="text/javascript" th:inline="javascript">
+			mapboxgl.accessToken = 'pk.eyJ1IjoiamFuZ283MDcwNyIsImEiOiJja25nM3dwZ2EwbmdpMnhud2l3NnptdDB2In0.YEBs1Z8MUie4xPW-kDiIGg';
+		var map = new mapboxgl.Map({
+		container: 'map',
+		style: 'mapbox://styles/mapbox/streets-v11',
+		center: ([-2.2426,53.4808]),
+		zoom: 9
+		});
+		var venues = [[${venues_mark}]];
+		var all_markers = [venues.length];
+		for(var i = 0; i < venues.length; i++){
+			all_markers[i] = [venues[i].longitude, venues[i].latitude];
+			var html = "<h4>"+venues[i].name+"</h4><br>Events at this venue:";
+			
+		
+			for(var j = 0; j < venues[i].events.length; j++){
+				var href= "/events/event_detail/" + venues[i].events[j].id;
+				html+= "<br>"+ "<a href="+href+">" + venues[i].events[j].name + "</a>"
+			}
+				
+			// Create a Marker and add it to the map.
+				var marker1 = new mapboxgl.Marker()
+				.setLngLat([venues[i].longitude, venues[i].latitude])
+				.setPopup(new mapboxgl.Popup().setHTML(html))
+				.addTo(map);
+				
+		}	
+		map.fitBounds(all_markers);
+		</script>
+
+	<br>
+  </div>
+  
+  
+   
+
+</body>
+</html>
